@@ -14,13 +14,19 @@ def filestr(path:str) -> str:
 
 def rmws(txt:str):
     s = txt
-    leadingws = re.compile(r'^\s+')
+    headtailws = re.compile(r'(^\s+|\s+$)')
     blankline = re.compile(r'^\s*$')
 
-    s = leadingws.sub('', s)
+    s = headtailws.sub('', s)
     s = blankline.sub('', s)
 
     return s
+
+def tidylabel(label:str) -> str:
+    properlabel = label.lower()
+    ws = re.compile(r'\s+')
+    properlabel = ws.sub('-', properlabel)
+    return properlabel
 
 def linedepth(line:str) -> int:
     depth = 0
@@ -52,17 +58,36 @@ def parseitem(line:str):
         i += 1
     
     item['label'] = rmws(item['label'])
+    item['exec'] = rmws(item['exec'])
 
     if item['label'] == '':
         return
 
+    if item['exec'] == '':
+        item['exec'] = None
+
     return item
 
-def mkxml(menu) -> str:
+def mkxml(menu:list) -> str:
     xml = '<?xml version="1.0" encoding="UTF-8">\n<openbox_menu xmlns="http://openbox.org/3.4/menu">\n'
+    xml += '<menu id="root-menu" label="Openbox 3">\n'
+    curdepth = 0
+    prevdepth = 0
+    for i, item in enumerate(menu):
+        prevdepth = curdepth
+        curdepth = item['depth']
+        if curdepth < prevdepth:
+            diff = prevdepth - curdepth
+            xml += diff*'</menu>\n'
 
-    xml += '</openbox_menu>\n'
-    return
+        if item['exec'] == None:
+            xml += f'<menu id="{tidylabel(item["label"])}" label="{item["label"]}">\n'
+        else:
+            xml += f'<item label="{item["label"]}">\n<action name="Execute"><command>{item["exec"]}</command>\n'
+            xml += '<startupnotify><enabled>yes</enabled></startupnotify>\n</action>\n</item>\n'
+
+    xml += '</menu>\n</openbox_menu>\n'
+    return xml
 
 def usage():
     print('USAGE: mkmenu [MENUFILE]')
@@ -74,11 +99,14 @@ def main(argc:int, argv:list):
 
     fbuffer = filestr(argv[1])
     fbuffer = fbuffer.split('\n')
+    menu = []
     for l in fbuffer:
-        print(parseitem(l))
+        menu.append(parseitem(l))
+    menu = list(filter(lambda n : n != None, menu))
+    # for e in menu:
+    #     print(e)
+    print(mkxml(menu))
     
-    
-
 if __name__ == '__main__':
     argc = len(argv)
     main(argc, argv)
