@@ -60,11 +60,9 @@ def parseitem(line:str):
     item['label'] = rmws(item['label'])
     item['exec'] = rmws(item['exec'])
 
-    if item['label'] == '':
-        return
+    if item['label'] == '': return
 
-    if item['exec'] == '':
-        item['exec'] = None
+    if item['exec'] == '': item['exec'] = None
 
     return item
 
@@ -73,15 +71,23 @@ def mkxml(menu:list) -> str:
     xml += '<menu id="root-menu" label="Openbox 3">\n'
     curdepth = 0
     prevdepth = 0
+
     for i, item in enumerate(menu):
         prevdepth = curdepth
         curdepth = item['depth']
+
         if curdepth < prevdepth:
             diff = prevdepth - curdepth
             xml += diff*'</menu>\n'
 
         if item['exec'] == None:
-            xml += f'<menu id="{tidylabel(item["label"])}" label="{item["label"]}">\n'
+            if item['label'] == '---':
+                xml += '<separator />\n'
+            elif item['label'][0] == '#':
+                xml += f'<separator label="{(item["label"])[1:]}"/>\n'
+            else:
+                xml += f'<menu id="{tidylabel(item["label"])}" label="{item["label"]}">\n'
+
         else:
             xml += f'<item label="{item["label"]}">\n<action name="Execute"><command>{item["exec"]}</command>\n'
             xml += '<startupnotify><enabled>yes</enabled></startupnotify>\n</action>\n</item>\n'
