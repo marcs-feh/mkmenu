@@ -96,22 +96,60 @@ def mkxml(menu:list) -> str:
     return xml
 
 def usage():
-    print('USAGE: mkmenu [MENUFILE]')
+    print(  'USAGE: mkmenu [-h --] [-o OUTFILE] [FILES]\n',
+            '    -h    display this help message\n',
+            '    -o    output file, stdout is used by default\n',
+            '    --    stop parsing options after \'--\'')
 
 def main(argc:int, argv:list):
     if argc < 2:
         usage()
         exit(1)
 
-    fbuffer = filestr(argv[1])
+    outfile = None
+    flist = []
+
+    opts = ['-h', '-o', '--']
+
+    i = 1
+    while i < argc:
+        if argv[i] in opts:
+            if argv[i] == '--':
+                opts = []
+            elif argv[i] == '-h':
+                usage()
+                exit(0)
+            elif argv[i] == '-o':
+                try:
+                    i += 1
+                    outfile = argv[i]
+                except IndexError:
+                    print('mkmenu: no output file provided.')
+                    exit(1)
+        else:
+            flist.append(argv[i])
+        i += 1
+    
+    if len(flist) == 0:
+        usage()
+        exit(1)
+
+    fbuffer = ''
+    for f in flist:
+        fbuffer += filestr(f)
+
     fbuffer = fbuffer.split('\n')
     menu = []
     for l in fbuffer:
         menu.append(parseitem(l))
+
     menu = list(filter(lambda n : n != None, menu))
-    # for e in menu:
-    #     print(e)
-    print(mkxml(menu))
+
+    if outfile == None:
+        print(mkxml(menu))
+    else:
+        with open(outfile, 'w') as f:
+            f.write(mkxml(menu))
     
 if __name__ == '__main__':
     argc = len(argv)
