@@ -66,9 +66,9 @@ def parseitem(line:str):
 
     return item
 
-def mkxml(menu:list) -> str:
-    xml = '<?xml version="1.0" encoding="UTF-8">\n<openbox_menu xmlns="http://openbox.org/3.4/menu">\n'
-    xml += '<menu id="root-menu" label="Openbox 3">\n'
+def mkxml(menu:list, obitems=True) -> str:
+    xml = '<?xml version="1.0" encoding="UTF-8">\n<openbox_menu xmlns="http://openbox.org/3.4/menu">\n<menu id="root-menu" label="Openbox 3"?>\n'
+    obsubmenu = '<!-- OpenBox Menu (automatically generated) -->\n<menu id="openbox" label="Openbox" ><item label="Configuration Manager"><action name="Execute"><command>obconf</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Reconfigure"><action name="Execute"><command>openbox --reconfigure</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Restart"><action name="Execute"><command>openbox --restart</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><separator /><item label="Exit"><action name="Execute"><command>openbox --exit</command><startupnotify><enabled>yes</enabled></startupnotify></action></item></menu>\n\n'
     curdepth = 0
     prevdepth = 0
 
@@ -92,6 +92,8 @@ def mkxml(menu:list) -> str:
             xml += f'<item label="{item["label"]}">\n<action name="Execute"><command>{item["exec"]}</command>\n'
             xml += '<startupnotify><enabled>yes</enabled></startupnotify>\n</action>\n</item>\n'
 
+    if obitems:
+        xml += obsubmenu
     xml += '</menu>\n</openbox_menu>\n'
     return xml
 
@@ -99,6 +101,7 @@ def usage():
     print(  'USAGE: mkmenu [-h --] [-o OUTFILE] [FILES]\n',
             '    -h    display this help message\n',
             '    -o    output file, stdout is used by default\n',
+            '    -O    don\'t include built-in openbox menu\n',
             '    --    stop parsing options after \'--\'')
 
 def main(argc:int, argv:list):
@@ -109,7 +112,8 @@ def main(argc:int, argv:list):
     outfile = None
     flist = []
 
-    opts = ['-h', '-o', '--']
+    opts = ['-h', '-o', '-O','--']
+    includeobitems = True
 
     i = 1
     while i < argc:
@@ -126,6 +130,8 @@ def main(argc:int, argv:list):
                 except IndexError:
                     print('mkmenu: no output file provided.')
                     exit(1)
+            elif argv[i] == '-O':
+                includeobitems = False
         else:
             flist.append(argv[i])
         i += 1
@@ -149,7 +155,7 @@ def main(argc:int, argv:list):
         print(mkxml(menu))
     else:
         with open(outfile, 'w') as f:
-            f.write(mkxml(menu))
+            f.write(mkxml(menu, obitems=includeobitems))
     
 if __name__ == '__main__':
     argc = len(argv)
