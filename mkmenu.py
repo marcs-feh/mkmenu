@@ -68,7 +68,7 @@ def parseitem(line:str):
 
 def mkxml(menu:list, obitems=True) -> str:
     xml = '<?xml version="1.0" encoding="UTF-8">\n<openbox_menu xmlns="http://openbox.org/3.4/menu">\n<menu id="root-menu" label="Openbox 3"?>\n'
-    obsubmenu = '<!-- OpenBox Menu (automatically generated) -->\n<menu id="openbox" label="Openbox" ><item label="Configuration Manager"><action name="Execute"><command>obconf</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Reconfigure"><action name="Execute"><command>openbox --reconfigure</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Restart"><action name="Execute"><command>openbox --restart</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><separator /><item label="Exit"><action name="Execute"><command>openbox --exit</command><startupnotify><enabled>yes</enabled></startupnotify></action></item></menu>\n\n'
+    obsubmenu = '<!-- OpenBox Menu (automatically generated) -->\n<menu id="openbox" label="Openbox" ><item label="Configuration Manager"><action name="Execute"><command>obconf</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Reconfigure"><action name="Execute"><command>openbox --reconfigure</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Restart"><action name="Execute"><command>openbox --restart</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><separator /><item label="Exit"><action name="Execute"><command>openbox --exit</command><startupnotify><enabled>yes</enabled></startupnotify></action></item></menu>\n<!-- -->\n'
     curdepth = 0
     prevdepth = 0
 
