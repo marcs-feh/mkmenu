@@ -67,8 +67,36 @@ def parseitem(line:str):
     return item
 
 def mkxml(menu:list, obitems=True) -> str:
-    xml = '<?xml version="1.0" encoding="UTF-8">\n<openbox_menu xmlns="http://openbox.org/3.4/menu">\n<menu id="root-menu" label="Openbox 3"?>\n'
-    obsubmenu = '<!-- OpenBox Menu (automatically generated) -->\n<menu id="openbox" label="Openbox" ><item label="Configuration Manager"><action name="Execute"><command>obconf</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Reconfigure"><action name="Execute"><command>openbox --reconfigure</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><item label="Restart"><action name="Execute"><command>openbox --restart</command><startupnotify><enabled>yes</enabled></startupnotify></action></item><separator /><item label="Exit"><action name="Execute"><command>openbox --exit</command><startupnotify><enabled>yes</enabled></startupnotify></action></item></menu>\n<!-- -->\n'
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'+
+           '<openbox_menu xmlns="http://openbox.org/3.4/menu">\n'+
+           '<menu id="root-menu" label="Openbox 3">\n')
+
+    obsubmenu = ('<!-- OpenBox Actions Menu -->\n'+
+                 '<menu id="openbox" label="Openbox">\n'+
+                 '<item label="Configuration Manager">\n'+
+                 '<action name="Execute">\n'+
+                 '<command>obconf</command>\n'+
+                 '<startupnotify><enabled>yes</enabled></startupnotify>\n'+
+                 '</action>\n'+
+                 '</item>\n'+
+                 '<item label="Reconfigure">\n'+
+                 '<action name="Execute">\n'+
+                 '<command>openbox --reconfigure</command>\n'+
+                 '<startupnotify><enabled>yes</enabled></startupnotify>\n'+
+                 '</action>\n'+
+                 '</item>\n'+
+                 '<item label="Restart">\n'+
+                 '<action name="Execute">\n'+
+                 '<command>openbox --restart</command>\n'+
+                 '<startupnotify><enabled>yes</enabled></startupnotify>\n'+
+                 '</action>\n'+
+                 '</item>\n'+
+                 '<separator />\n'+
+                 '<item label="Exit">\n'+
+                 '<action name="Exit"><prompt>yes</prompt></action>'
+                 '</item>'
+                 '</menu>\n<!-- === -->\n')
+    
     curdepth = 0
     prevdepth = 0
 
@@ -89,11 +117,15 @@ def mkxml(menu:list, obitems=True) -> str:
                 xml += f'<menu id="{tidylabel(item["label"])}" label="{item["label"]}">\n'
 
         else:
-            xml += f'<item label="{item["label"]}">\n<action name="Execute"><command>{item["exec"]}</command>\n'
-            xml += '<startupnotify><enabled>yes</enabled></startupnotify>\n</action>\n</item>\n'
+            xml += f'<item label="{item["label"]}">\n<action name="Execute"><command>{item["exec"]}</command>\n</action>\n</item>\n'
+    
+    # Make sure the last menu is fully closed
+    if curdepth > 0:
+        xml += curdepth*'</menu>\n'
 
     if obitems:
         xml += obsubmenu
+
     xml += '</menu>\n</openbox_menu>\n'
     return xml
 
@@ -102,6 +134,7 @@ def usage():
             '    -h    display this help message\n',
             '    -o    output file, stdout is used by default\n',
             '    -O    don\'t include built-in openbox menu\n',
+            '    -l    don\'t include built-in openbox menu\n',
             '    --    stop parsing options after \'--\'')
 
 def main(argc:int, argv:list):
