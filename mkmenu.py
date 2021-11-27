@@ -22,6 +22,13 @@ def rmws(txt:str):
 
     return s
 
+def expandtermcmd(txt:str, termcmd:str) -> str:
+    termre = re.compile(r':@T ')
+    exptxt = txt
+    exptxt = termre.sub(f':{termcmd} ', exptxt)
+
+    return exptxt
+
 def tidylabel(label:str) -> str:
     properlabel = label.lower()
     ws = re.compile(r'\s+')
@@ -133,8 +140,8 @@ def usage():
     print(  'USAGE: mkmenu [-h --] [-o OUTFILE] [FILES]\n',
             '    -h    display this help message\n',
             '    -o    output file, stdout is used by default\n',
+            '    -t    terminal comand to be used (enclosed by quotes)\n',
             '    -O    don\'t include built-in openbox menu\n',
-            '    -l    don\'t include built-in openbox menu\n',
             '    --    stop parsing options after \'--\'')
 
 def main(argc:int, argv:list):
@@ -142,10 +149,11 @@ def main(argc:int, argv:list):
         usage()
         exit(1)
 
+    termcmd = 'st -e'
     outfile = None
     flist = []
 
-    opts = ['-h', '-o', '-O','--']
+    opts = ['-h', '-o', '-t', '-O', '--']
     includeobitems = True
 
     i = 1
@@ -163,6 +171,13 @@ def main(argc:int, argv:list):
                 except IndexError:
                     print('mkmenu: no output file provided.')
                     exit(1)
+            elif argv[i] == '-t':
+                try:
+                    i += 1
+                    termcmd = argv[i]
+                except IndexError:
+                    print('mkmenu: terminal command not specified')
+                    exit(1)
             elif argv[i] == '-O':
                 includeobitems = False
         else:
@@ -176,7 +191,7 @@ def main(argc:int, argv:list):
     fbuffer = ''
     for f in flist:
         fbuffer += filestr(f)
-
+    fbuffer = expandtermcmd(fbuffer, termcmd)
     fbuffer = fbuffer.split('\n')
     menu = []
     for l in fbuffer:

@@ -1,4 +1,36 @@
 mkmenu
 ------
 
-mkmenu is a menumaker clone.
+mkmenu transforms simple text files into Openbox compatible XML. It is similar
+to menumaker in purpose however this is openbox exclusive and aims to be simple.
+
+Usage
+=====
+
+Just run `mkmenu -h` and you'll have figured out most of it
+
+
+Creating a Menu File
+====================
+
+Menus are generated from plain text files, and they follow a very similar structure
+
+```
+#named separator
+category
+  item:cmd
+  #named separator
+  item:cmd
+  ---
+  subcategory
+    item:cmd
+    item:cmd
+    item:cmd
+item:cmd
+item:cmd
+```
+
+- Where `---` is a separator, without any text.
+- Identation (2 spaces) controls the scope of the menus.
+- For commands to be run on a terminal emulator with `item name:@T cmd`, `@T` will
+  be converted to a terminal command, by default `st -e` is used.
