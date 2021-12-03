@@ -42,7 +42,7 @@ def linedepth(line:str) -> int:
             depth += 1
         else:
             break
-    
+
     return depth // 2
 
 def parseitem(line:str):
@@ -63,7 +63,7 @@ def parseitem(line:str):
         else:
             item['label'] += line[i]
         i += 1
-    
+
     item['label'] = rmws(item['label'])
     item['exec'] = rmws(item['exec'])
 
@@ -103,7 +103,7 @@ def mkxml(menu:list, obitems=True) -> str:
                  '<action name="Exit"><prompt>yes</prompt></action>'
                  '</item>'
                  '</menu>\n<!-- === -->\n')
-    
+
     curdepth = 0
     prevdepth = 0
 
@@ -125,7 +125,7 @@ def mkxml(menu:list, obitems=True) -> str:
 
         else:
             xml += f'<item label="{item["label"]}">\n<action name="Execute"><command>{item["exec"]}</command>\n</action>\n</item>\n'
-    
+
     # Make sure the last menu is fully closed
     if curdepth > 0:
         xml += curdepth*'</menu>\n'
@@ -183,7 +183,7 @@ def main(argc:int, argv:list):
         else:
             flist.append(argv[i])
         i += 1
-    
+
     if len(flist) == 0:
         usage()
         exit(1)
@@ -200,11 +200,11 @@ def main(argc:int, argv:list):
     menu = list(filter(lambda n : n != None, menu))
 
     if outfile == None:
-        print(mkxml(menu))
+        print(mkxml(menu, obitems=includeobitems))
     else:
         with open(outfile, 'w') as f:
             f.write(mkxml(menu, obitems=includeobitems))
-    
+
 if __name__ == '__main__':
     argc = len(argv)
     main(argc, argv)

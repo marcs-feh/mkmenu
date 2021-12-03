@@ -1,19 +1,15 @@
-mkmenu
-------
+# mkmenu
 
-mkmenu transforms simple text files into Openbox compatible XML. It is similar
-to menumaker in purpose however this is openbox exclusive and aims to be simple.
+mkmenu converts simple text files to Openbox compatible XML. It is similar
+to menumaker in purpose however this is openbox exclusive and aims to be *very* simple.
 
-Usage
-=====
+# Usage
 
-Just run `mkmenu -h` and you'll have figured out most of it
+Run `mkmenu -h`.
 
+# Creating a Menu File
 
-Creating a Menu File
-====================
-
-Menus are generated from plain text files, and they follow a very similar structure
+Menus are generated from plain text files, and they follow a very simple structure
 
 ```
 #named separator
@@ -32,5 +28,7 @@ item:cmd
 
 - Where `---` is a separator, without any text.
 - Identation (2 spaces) controls the scope of the menus.
-- For commands to be run on a terminal emulator with `item name:@T cmd`, `@T` will
-  be converted to a terminal command, by default `st -e` is used.
+- For commands to be run on a terminal emulator prepend `@T` before the command
+- `@T` will be converted your terminal command of choice, by default `st -e` is used.
+- You can have multiple files as input, they'll be concatenated in order of
+  input as one file and then processed into XML.
