@@ -25,7 +25,7 @@ def rmws(txt:str):
 def expandtermcmd(txt:str, termcmd:str) -> str:
 	termre = re.compile(r':\s*@T ')
 	exptxt = txt
-	exptxt = termre.sub(f':{termcmd} ', exptxt)
+	exptxt = termre.sub(f':{termcmd} ', exptxt, count=1)
 
 	return exptxt
 
