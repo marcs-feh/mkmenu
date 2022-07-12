@@ -27,7 +27,7 @@ item:cmd
 ```
 
 - Where `---` is a separator, without any text.
-- Identation (2 spaces) controls the scope of the menus.
+- Identation (2 spaces or 1 tab) controls the scope of the menus.
 - For commands to be run on a terminal emulator prepend `@T` before the command
 - `@T` will be converted your terminal command of choice, by default `st -e` is used.
 - You can have multiple files as input, they'll be concatenated in order of
