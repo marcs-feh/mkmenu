@@ -1,21 +1,23 @@
 #!/bin/sh
 
-INSTALL_DIR="~/.local/bin"
+INSTALL_DIR="$HOME/.local/bin"
 
 Install(){
-    mkdir -p "$INSTALL_DIR"
-    cp mkmenu.py "$INSTALL_DIR/mkmenu"
-    chmod 755 "$INSTALL_DIR/mkmenu"
+	echo "Installing."
+	mkdir -p "$INSTALL_DIR"
+	cp mkmenu.py "$INSTALL_DIR/mkmenu"
+	chmod 755 "$INSTALL_DIR/mkmenu"
 }
 
 Uninstall(){
-    rm -f "$INSTALL_DIR/mkmenu"
+	echo "Uninstalling."
+	rm -f "$INSTALL_DIR/mkmenu"
 }
 
 if [ "$1" = "i" ]; then
-    Install
+	Install
 elif [ "$1" = "u" ]; then
-    Uninstall
+	Uninstall
 else
-    printf "Options:\n\ti\tinstall\n\tu\tuninstall"
+	printf "Options:\n\ti\tinstall\n\tu\tuninstall\n"
 fi

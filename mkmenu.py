@@ -135,12 +135,12 @@ def mkxml(menu:list, obitems=True) -> str:
 	return xml
 
 def usage():
-	print(  'USAGE: mkmenu [-h --] [-o OUTFILE] [FILES]\n',
-			'	-h	display this help message\n',
-			'	-o	output file, stdout is used by default\n',
-			'	-t	terminal comand to be used (enclosed by quotes)\n',
-			'	-O	don\'t include built-in openbox menu\n',
-			'	--	stop parsing options after \'--\'')
+	print("USAGE: mkmenu [-h --] [-o OUTFILE] [FILES]\n",
+	"\t-h\tdisplay this help message\n",
+	"\t-o\toutput file, stdout is used by default\n",
+	"\t-t\tterminal command to be used (enclosed by quotes)\n",
+	"\t-O\tdon't include built-in openbox menu\n",
+	"\t--\tstop parsing options after '--'")
 
 def main(argc:int, argv:list):
 	if argc < 2:
